@@ -384,22 +384,14 @@ class CargoAdmin(admin.ModelAdmin):
     # SAVE CARGO
     # --------------------------------------------------------
 
-    def save_model(
-            self,
-            request,
-            obj,
-            form,
-            change,
-    ):
+    def save_model(self, request, obj, form, change):
         if not change and not obj.created_by:
             obj.created_by = request.user
 
-        super().save_model(
-            request,
-            obj,
-            form,
-            change,
-        )
+        # Cargo.save() ichida history yaratilganda requestga kirish uchun
+        obj._admin_request = request
+
+        super().save_model(request, obj, form, change)
 
     # --------------------------------------------------------
     # SAVE STATUS INLINE
@@ -412,14 +404,14 @@ class CargoAdmin(admin.ModelAdmin):
             formset,
             change,
     ):
-        instances = formset.save(
-            commit=False
-        )
+        instances = formset.save(commit=False)
 
         for instance in instances:
-
             if not instance.created_by:
                 instance.created_by = request.user
+
+            # Admin request'ni signalga yetkazamiz
+            instance._admin_request = request
 
             instance.save()
 
@@ -724,80 +716,80 @@ class CargoAdmin(admin.ModelAdmin):
 
     # --------------------------------------------------------
 
-    @admin.display(
-        description="Qabul qilgan",
-        ordering="accepted_by__username",
-    )
-    def accepted_by_display(self, obj):
-
-        if not obj.accepted_by:
-            return format_html(
-                """
-                <span style="
-                    color:#94a3b8;
-                    font-size:12px;
-                    display:inline-flex;
-                    align-items:center;
-                    gap:6px;
-                ">
-                    <i class="fas fa-clock"></i>
-                    Hali qabul qilinmagan
-                </span>
-                """
-            )
-
-        user = obj.accepted_by
-
-        name = user.get_full_name()
-
-        if name:
-            return format_html(
-                """
-                <div>
-                    <div style="
-                        display:flex;
-                        align-items:center;
-                        gap:7px;
-                    ">
-                        <i class="fas fa-circle-check"
-                           style="color:#16a34a;">
-                        </i>
-
-                        <strong>
-                            {}
-                        </strong>
-                    </div>
-
-                    <small style="
-                        color:#64748b;
-                        margin-left:22px;
-                    ">
-                        @{}
-                    </small>
-                </div>
-                """,
-                name,
-                user.username,
-            )
-
-        return format_html(
-            """
-            <span style="
-                display:inline-flex;
-                align-items:center;
-                gap:7px;
-            ">
-                <i class="fas fa-circle-check"
-                   style="color:#16a34a;">
-                </i>
-
-                <strong>
-                    {}
-                </strong>
-            </span>
-            """,
-            user.username,
-        )
+    # @admin.display(
+    #     description="Qabul qilgan",
+    #     ordering="accepted_by__username",
+    # )
+    # def accepted_by_display(self, obj):
+    #
+    #     if not obj.accepted_by:
+    #         return format_html(
+    #             """
+    #             <span style="
+    #                 color:#94a3b8;
+    #                 font-size:12px;
+    #                 display:inline-flex;
+    #                 align-items:center;
+    #                 gap:6px;
+    #             ">
+    #                 <i class="fas fa-clock"></i>
+    #                 Hali qabul qilinmagan
+    #             </span>
+    #             """
+    #         )
+    #
+    #     user = obj.accepted_by
+    #
+    #     name = user.get_full_name()
+    #
+    #     if name:
+    #         return format_html(
+    #             """
+    #             <div>
+    #                 <div style="
+    #                     display:flex;
+    #                     align-items:center;
+    #                     gap:7px;
+    #                 ">
+    #                     <i class="fas fa-circle-check"
+    #                        style="color:#16a34a;">
+    #                     </i>
+    #
+    #                     <strong>
+    #                         {}
+    #                     </strong>
+    #                 </div>
+    #
+    #                 <small style="
+    #                     color:#64748b;
+    #                     margin-left:22px;
+    #                 ">
+    #                     @{}
+    #                 </small>
+    #             </div>
+    #             """,
+    #             name,
+    #             user.username,
+    #         )
+    #
+    #     return format_html(
+    #         """
+    #         <span style="
+    #             display:inline-flex;
+    #             align-items:center;
+    #             gap:7px;
+    #         ">
+    #             <i class="fas fa-circle-check"
+    #                style="color:#16a34a;">
+    #             </i>
+    #
+    #             <strong>
+    #                 {}
+    #             </strong>
+    #         </span>
+    #         """,
+    #         user.username,
+    #     )
 
     # --------------------------------------------------------
 

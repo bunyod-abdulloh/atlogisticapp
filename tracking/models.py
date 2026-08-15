@@ -170,7 +170,8 @@ class Cargo(models.Model):
         super().save(*args, **kwargs)
 
         if is_new or status_changed:
-            self.history.create(
+            history_entry = CargoStatusUpdate(
+                cargo=self,
                 status_category=self.current_status_category,
                 custom_text=(
                     self.current_status_text
@@ -180,8 +181,12 @@ class Cargo(models.Model):
                 created_by=self.created_by,
             )
 
-        # Keyingi solishtirish uchun asl qiymatni yangilaymiz
-        self._original_status_category = self.current_status_category
+            # Admin view'dan kelgan requestni tarix yozuviga uzatamiz —
+            # shu orqali signal admin panelga alert chiqara oladi
+            if hasattr(self, "_admin_request"):
+                history_entry._admin_request = self._admin_request
+
+            history_entry.save()
 
 
 class CargoStatusUpdate(models.Model):

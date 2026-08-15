@@ -15,7 +15,7 @@ load_dotenv(BASE_DIR / ".env")
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-CHANGE-ME-IN-PRODUCTION")
 DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", ).split(",") if h.strip()]
 
 TELEGRAM_BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -159,6 +159,7 @@ JAZZMIN_SETTINGS = {
     },
 
     "custom_css": "css/admin-custom.css",
+    "custom_js": "js/admin-custom.js",
 
     "site_logo": "img/logo.png",
     "site_icon": "img/logo.png",

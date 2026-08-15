@@ -9,3 +9,86 @@
     height: auto;
     object-fit: contain;
 }
+
+/* =========================================================
+   CARGO ADMIN SEARCH
+   ========================================================= */
+
+/* Filterlar + Search joylashadigan container */
+#change-list-filters > .d-flex {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+/* Search form - to'liq qator */
+#change-list-filters #changelist-search {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Filterlar */
+#change-list-filters #changelist-search .form-group {
+    margin-bottom: 0 !important;
+}
+
+/* Search input */
+#change-list-filters #searchbar {
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    min-width: 400px !important;
+    height: 44px !important;
+
+    box-sizing: border-box !important;
+
+    padding: 8px 14px !important;
+
+    background-color: #ffffff !important;
+
+    border: 1px solid #adb5bd !important;
+    border-radius: 6px !important;
+
+    color: #212529 !important;
+    font-size: 14px !important;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Placeholder */
+#change-list-filters #searchbar::placeholder {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}
+
+/* Input focus */
+#change-list-filters #searchbar:focus {
+    outline: none !important;
+
+    border-color: #f0ad00 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(240, 173, 0, 0.15) !important;
+}
+
+/* Search button */
+#change-list-filters #changelist-search button[type="submit"] {
+    height: 44px !important;
+
+    padding: 8px 25px !important;
+
+    border-radius: 6px !important;
+
+    font-size: 14px !important;
+    font-weight: 600 !important;
+
+    white-space: nowrap !important;
+}
