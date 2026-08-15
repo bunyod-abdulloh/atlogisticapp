@@ -1,0 +1,11 @@
+.login-logo {
+    text-align: center;
+}
+
+.login-logo img {
+    max-width: 180px;
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}

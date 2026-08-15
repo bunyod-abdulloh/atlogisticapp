@@ -1,0 +1,577 @@
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+:root{
+  --ink:        #17181C;
+  --paper:      #FDFCFB;
+  --orange:     #F29100;
+  --orange-deep:#C96F00;
+  --slate:      #62666E;
+  --line:       #E7E5E0;
+  --success:    #1E8E5A;
+  --success-bg: #E7F6EE;
+  --transit-bg: #FFF3E0;
+  --transit:    #B4650A;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+
+  --radius: 14px;
+  --shadow: 0 20px 40px -24px rgba(23,24,28,.25);
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+
+body{
+  margin:0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.site-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 24px clamp(20px, 6vw, 64px);
+}
+
+.brand{ display:flex; align-items:center; gap:10px; }
+.brand-mark{ width:26px; height:26px; color: var(--orange); }
+.brand-name{
+  font-family: var(--font-display);
+  font-weight:600;
+  font-size:1.05rem;
+  letter-spacing:.01em;
+}
+.brand-name em{ color: var(--orange); font-style: normal; font-weight: 700; }
+
+.header-actions{ display:flex; align-items:center; gap:10px; }
+
+.header-link{
+  font-size:.9rem;
+  font-weight:600;
+  color: var(--ink);
+  text-decoration:none;
+  padding:9px 18px;
+  border:1.5px solid var(--ink);
+  border-radius: 999px;
+  transition: background .15s ease, color .15s ease;
+}
+.header-link:hover{ background: var(--ink); color: var(--paper); }
+
+.header-btn{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 16px 9px 12px;
+  font-family: var(--font-body);
+  font-size:.9rem;
+  font-weight:600;
+  color: var(--slate);
+  background:none;
+  border:1.5px solid transparent;
+  border-radius:999px;
+  cursor:pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.header-btn svg{ width:18px; height:18px; }
+.header-btn:hover{ background:#F1EFEA; color: var(--ink); }
+.header-btn:focus-visible{ outline: 3px solid var(--orange); outline-offset:2px; }
+
+/* =========================================================
+   YUKLAR TARIXI — DRAWER
+   ========================================================= */
+.drawer-overlay{
+  position:fixed; inset:0;
+  background: rgba(23,24,28,.4);
+  z-index: 40;
+  opacity:0;
+  transition: opacity .2s ease;
+}
+.drawer-overlay.is-open{ opacity:1; }
+
+.history-drawer{
+  position:fixed;
+  top:0; right:0;
+  height:100%;
+  width: min(380px, 100%);
+  background:#fff;
+  border-left:1px solid var(--line);
+  box-shadow: -20px 0 40px -24px rgba(23,24,28,.35);
+  z-index: 41;
+  padding: 22px 22px 24px;
+  display:flex;
+  flex-direction:column;
+  transform: translateX(100%);
+  transition: transform .25s ease;
+  overflow-y:auto;
+}
+.history-drawer.is-open{ transform: translateX(0); }
+
+.drawer-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+.drawer-header h2{
+  font-family: var(--font-display);
+  font-size:1.1rem;
+  margin:0;
+}
+.drawer-close{
+  width:32px; height:32px;
+  display:flex; align-items:center; justify-content:center;
+  background:none; border:none; cursor:pointer;
+  color: var(--slate);
+  border-radius:8px;
+}
+.drawer-close svg{ width:18px; height:18px; }
+.drawer-close:hover{ background:#F1EFEA; color: var(--ink); }
+
+.drawer-hint{
+  font-size:.83rem;
+  color: var(--slate);
+  margin: 0 0 18px;
+  line-height:1.45;
+}
+
+.history-list{
+  list-style:none;
+  margin:0; padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  flex:1;
+}
+
+.history-item{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding: 12px 14px;
+  background: #FAF9F6;
+  border:1px solid var(--line);
+  border-radius:10px;
+  cursor:pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.history-item:hover{ border-color: var(--orange); background:#fff; }
+.history-item:focus-visible{ outline: 3px solid var(--orange); outline-offset:1px; }
+
+.history-item-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:5px;
+}
+.history-item-number{
+  font-family: var(--font-mono);
+  font-weight:600;
+  font-size:.92rem;
+}
+.history-item-status{
+  font-size:.72rem;
+  font-weight:600;
+  padding:3px 9px;
+  border-radius:999px;
+  background: var(--transit-bg);
+  color: var(--transit);
+  white-space:nowrap;
+}
+.history-item-status.is-delivered{ background: var(--success-bg); color: var(--success); }
+
+.history-item-time{
+  margin:0;
+  font-size:.76rem;
+  color: var(--slate);
+}
+
+.history-empty{
+  font-size:.9rem;
+  color: var(--slate);
+  text-align:center;
+  margin-top:30px;
+}
+
+.history-clear{
+  margin-top:16px;
+  padding:10px;
+  font-size:.85rem;
+  font-weight:600;
+  color:#B3261E;
+  background:none;
+  border:1.5px solid #F0D3D1;
+  border-radius:10px;
+  cursor:pointer;
+  transition: background .15s ease;
+}
+.history-clear:hover{ background:#FBEEED; }
+
+.history-load-more{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:14px;
+  padding:11px;
+  font-family: var(--font-body);
+  font-size:.87rem;
+  font-weight:600;
+  color: var(--ink);
+  background:#F1EFEA;
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  cursor:pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.history-load-more:hover{ background:#E7E5E0; }
+.history-load-more:focus-visible{ outline: 3px solid var(--orange); outline-offset:2px; }
+.history-load-more:disabled{ cursor:default; opacity:.75; }
+
+.history-load-more .btn-spinner{
+  display:none;
+  width:14px; height:14px;
+  border:2px solid rgba(23,24,28,.25);
+  border-top-color: var(--ink);
+  border-radius:50%;
+}
+.history-load-more.is-loading .btn-text{ display:none; }
+.history-load-more.is-loading .btn-spinner{ display:inline-block; animation: spin .7s linear infinite; }
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{
+  position:relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(40px, 8vw, 88px) 24px 56px;
+  text-align:center;
+}
+
+.hero-route{
+  position:absolute;
+  inset: -10px 0 auto 0;
+  height: 220px;
+  z-index:0;
+  pointer-events:none;
+  opacity:.35;
+}
+.hero-route svg:first-child{ width:100%; height:100%; }
+#route-path{
+  fill:none;
+  stroke: var(--orange);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 10;
+  animation: route-flow 14s linear infinite;
+}
+@keyframes route-flow{ to{ stroke-dashoffset: -360; } }
+
+.hero-pin{ position:absolute; width:20px; height:20px; color: var(--orange); }
+.hero-pin--start{ left: 2%; top: 62%; }
+.hero-pin--end{ right: 2%; top: 18%; }
+
+.eyebrow{
+  position:relative; z-index:1;
+  font-family: var(--font-mono);
+  font-size:.78rem;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color: var(--orange-deep);
+  margin: 0 0 14px;
+}
+
+.hero h1{
+  position:relative; z-index:1;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+  font-weight:700;
+  line-height:1.15;
+  margin: 0 0 14px;
+}
+
+.subtitle{
+  position:relative; z-index:1;
+  color: var(--slate);
+  font-size: 1.02rem;
+  margin: 0 0 32px;
+}
+
+#track-form{
+  position:relative; z-index:1;
+  display:flex;
+  gap:10px;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+#tracking-input{
+  flex:1;
+  min-width:0;
+  padding: 15px 18px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing:.02em;
+  color: var(--ink);
+  background:#fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  outline:none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+#tracking-input::placeholder{ color:#B3B0A9; font-family: var(--font-body); }
+#tracking-input:focus{
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(242,145,0,.15);
+}
+
+#track-submit{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px;
+  padding: 15px 24px;
+  font-family: var(--font-body);
+  font-weight:600;
+  font-size: .98rem;
+  color:#fff;
+  background: var(--ink);
+  border:none;
+  border-radius: 10px;
+  cursor:pointer;
+  transition: background .15s ease, transform .1s ease;
+}
+#track-submit:hover{ background: var(--orange-deep); }
+#track-submit:active{ transform: scale(.97); }
+#track-submit:focus-visible{ outline: 3px solid var(--orange); outline-offset:2px; }
+
+.btn-spinner{
+  display:none;
+  width:15px; height:15px;
+  border:2px solid rgba(255,255,255,.4);
+  border-top-color:#fff;
+  border-radius:50%;
+}
+#track-submit.is-loading .btn-text{ display:none; }
+#track-submit.is-loading .btn-spinner{ display:inline-block; animation: spin .7s linear infinite; }
+#track-submit.is-loading{ pointer-events:none; opacity:.9; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+.form-error{
+  position:relative; z-index:1;
+  margin: 14px 0 0;
+  font-size:.9rem;
+  color:#B3261E;
+}
+
+/* =========================================================
+   NATIJA — STATUS KARTASI
+   ========================================================= */
+.result{
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 24px 88px;
+}
+
+.result-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 28px;
+}
+
+.result-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.result-label{
+  margin:0 0 4px;
+  font-size:.78rem;
+  color: var(--slate);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.result-number{
+  margin:0;
+  font-family: var(--font-mono);
+  font-weight:600;
+  font-size:1.25rem;
+}
+
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding: 7px 14px;
+  border-radius:999px;
+  font-size:.86rem;
+  font-weight:600;
+  white-space:nowrap;
+  background: var(--transit-bg);
+  color: var(--transit);
+}
+.status-badge.is-delivered{ background: var(--success-bg); color: var(--success); }
+.status-dot{ width:7px; height:7px; border-radius:50%; background: currentColor; }
+
+.route-line{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px dashed var(--line);
+  font-size:.95rem;
+  color: var(--ink);
+  flex-wrap:wrap;
+}
+.route-arrow{ width:16px; height:16px; color: var(--orange); flex-shrink:0; }
+
+/* =========================================================
+   TIMELINE — logotip belgisi qayta ishlatilgan joy
+   ========================================================= */
+.timeline-heading{
+  font-family: var(--font-display);
+  font-size:1.05rem;
+  font-weight:600;
+  margin: 40px 0 20px;
+}
+
+.timeline{
+  list-style:none;
+  margin:0; padding:0;
+  position:relative;
+}
+.timeline::before{
+  content:"";
+  position:absolute;
+  left:13px; top:6px; bottom:6px;
+  width:1.5px;
+  background: var(--line);
+}
+
+.timeline-item{
+  position:relative;
+  display:flex;
+  gap:18px;
+  padding-bottom: 26px;
+}
+.timeline-item:last-child{ padding-bottom:0; }
+
+.timeline-mark{
+  position:relative; z-index:1;
+  flex-shrink:0;
+  width:27px; height:27px;
+  color: var(--line);
+}
+.timeline-item.is-current .timeline-mark{ color: var(--orange); }
+
+.timeline-body{ padding-top:1px; }
+.timeline-status{
+  margin:0 0 3px;
+  font-weight:600;
+  font-size:.98rem;
+}
+.timeline-meta{
+  margin:0;
+  font-size:.84rem;
+  color: var(--slate);
+  font-family: var(--font-mono);
+}
+.timeline-comment{
+  margin:6px 0 0;
+  font-size:.9rem;
+  color: var(--ink);
+  background: #F6F5F2;
+  border-radius:8px;
+  padding:8px 12px;
+}
+
+/* =========================================================
+   TOPILMADI HOLATI
+   ========================================================= */
+.empty-state{
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 40px 24px 100px;
+  text-align:center;
+}
+.empty-mark{
+  width:44px; height:44px;
+  color: var(--line);
+  margin: 0 auto 18px;
+}
+.empty-state h2{
+  font-family: var(--font-display);
+  font-size:1.2rem;
+  margin: 0 0 8px;
+}
+.empty-state p{
+  color: var(--slate);
+  font-size:.94rem;
+  margin:0;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer{
+  padding: 24px;
+  text-align:center;
+  font-size:.82rem;
+  color: var(--slate);
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce){
+  #route-path{ animation:none; }
+  .btn-spinner{ animation:none; }
+  html{ scroll-behavior:auto; }
+}
+
+/* =========================================================
+   MOBIL
+   ========================================================= */
+@media (max-width: 480px){
+  #track-form{ flex-direction:column; }
+  .hero-route{ display:none; }
+  .result-top{ flex-direction:column; }
+
+  /* Yuklar tarixi tugmasi: to'liq matn yashiriladi, qisqasi chiqadi */
+  .header-btn-text-full{ display:none; }
+  .header-btn-text-short{ display:inline; }
+
+  .header-actions{ gap:8px; }
+
+  .header-btn{
+    padding: 8px 13px 8px 10px;
+    gap: 6px;
+    font-size: .84rem;
+    border: 1.5px solid var(--line);
+  }
+
+  .header-link{
+    padding: 8px 15px;
+    font-size: .84rem;
+  }
+}
