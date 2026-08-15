@@ -85,10 +85,10 @@ def _send_status_notification(status_update, client, request=None):
         if success:
             messages.success(
                 request,
-                f"✅ Telegram xabari «{client.name}» mijoziga yuborildi."
+                f"Telegram xabari «{client.name}» mijoziga yuborildi."
             )
         else:
             messages.error(
                 request,
-                f"❌ Telegram xabari «{client.name}» mijoziga yuborilmadi."
+                f"Telegram xabari «{client.name}» mijoziga yuborilmadi."
             )
