@@ -1,9 +1,11 @@
 import hashlib
 import hmac
 import json
+import logging
 import time
 from urllib.parse import parse_qsl
 
+import requests
 from django.conf import settings
 
 TELEGRAM_INIT_DATA_MAX_AGE = 24 * 60 * 60  # 1 kun — replay hujumini cheklash uchun
@@ -48,3 +50,36 @@ def get_telegram_user(init_data: str | None) -> dict | None:
         return json.loads(user_json)
     except json.JSONDecodeError:
         return None
+
+
+logger = logging.getLogger(__name__)
+
+TELEGRAM_SEND_MESSAGE_URL = "https://api.telegram.org/bot{token}/sendMessage"
+TELEGRAM_REQUEST_TIMEOUT = 5  # soniya — Telegram javob bermasa cheksiz kutmasin
+
+
+def send_telegram_message(chat_id: int, text: str) -> bool:
+    """
+    Telegram foydalanuvchisiga xabar yuboradi.
+
+    Xatolik yuz bersa (foydalanuvchi botni bloklagan, tarmoq muammosi va h.k.)
+    False qaytaradi va logga yozadi — bu funksiya hech qachon exception
+    tashlamaydi, shuning uchun admin panel saqlashini to'xtatib qo'ymaydi.
+    """
+    url = TELEGRAM_SEND_MESSAGE_URL.format(token=settings.TELEGRAM_BOT_TOKEN)
+
+    payload = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=TELEGRAM_REQUEST_TIMEOUT)
+        response.raise_for_status()
+        return True
+    except requests.RequestException:
+        # Tokenni logga chiqarmaslik uchun url emas, faqat chat_id yoziladi
+        logger.warning("Telegram xabar yuborilmadi: chat_id=%s", chat_id, exc_info=True)
+        return False
