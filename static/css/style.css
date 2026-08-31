@@ -411,12 +411,13 @@ body{
 }
 
 .result-image {
-    width: 56px;
-    height: 56px;
-    border-radius: 10px;
+    width: 84px;
+    height: 84px;
+    border-radius: 14px;
     object-fit: cover;
     flex-shrink: 0;
     border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px -8px rgba(23, 24, 28, 0.25);
 }
 
 .result-label{
@@ -589,5 +590,10 @@ body{
   .header-link{
     padding: 8px 15px;
     font-size: .84rem;
+  }
+
+  .result-image {
+    width: 96px;
+    height: 96px;
   }
 }
