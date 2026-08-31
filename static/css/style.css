@@ -395,12 +395,20 @@ body{
   padding: 26px 28px;
 }
 
-.result-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:16px;
-  flex-wrap:wrap;
+
+.result-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.result-image {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .result-label{

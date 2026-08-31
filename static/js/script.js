@@ -371,6 +371,17 @@ function renderResult(cargo) {
   document.getElementById("res-origin").textContent = cargo.origin;
   document.getElementById("res-destination").textContent = cargo.destination;
 
+  const image = document.getElementById("res-cargo-image");
+  if (cargo.image) {
+    image.src = cargo.image;
+    image.alt = `Yuk rasmi — ${cargo.tracking_number}`;
+    image.hidden = false;
+  } else {
+    // Rasm bo'lmasa elementni butunlay yashiramiz — bo'sh "broken image" ikonkasi ko'rinmasin
+    image.hidden = true;
+    image.src = "";
+  }
+
   const badge = document.getElementById("res-status-badge");
   document.getElementById("res-status-text").textContent = cargo.status_display;
   badge.classList.toggle("is-delivered", cargo.status === DELIVERED_CODE);

@@ -11,11 +11,6 @@ from .throttles import CargoHistoryThrottle, CargoTrackThrottle
 
 
 class CargoTrackView(APIView):
-    """
-    GET /user/api/track/<tracking_number>/
-    PUBLIC — Telegram autentifikatsiyasi talab qilinmaydi, faqat throttle bilan himoyalangan.
-    """
-
     throttle_classes = [CargoTrackThrottle]
 
     def get(self, request, tracking_number):
@@ -31,7 +26,8 @@ class CargoTrackView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        return Response(ShipmentTrackSerializer(shipment).data)
+        # context={"request": request} — rasm URL'ini to'liq (absolute) qilib qaytarish uchun shart
+        return Response(ShipmentTrackSerializer(shipment, context={"request": request}).data)
 
 
 class CargoHistoryPagination(LimitOffsetPagination):
