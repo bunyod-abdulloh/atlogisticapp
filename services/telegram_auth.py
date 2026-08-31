@@ -25,16 +25,13 @@ class InvalidInitData(Exception):
 
 
 def parse_and_validate_init_data(init_data: str) -> dict:
-    """
-    Tekshiruvdan o'tsa — Telegram foydalanuvchi ma'lumotini (dict) qaytaradi.
-    Aks holda InvalidInitData ko'taradi.
-
-    DIQQAT: bu tekshiruvsiz initData'dagi 'id'ga ishonmang — soxtalashtirilishi mumkin.
-    """
     if not init_data:
         raise InvalidInitData("initData bo'sh")
 
-    pairs = dict(parse_qsl(init_data, strict_parsing=True))
+    try:
+        pairs = dict(parse_qsl(init_data, keep_blank_values=True, strict_parsing=True))
+    except ValueError as exc:
+        raise InvalidInitData("initData formati noto'g'ri") from exc
 
     received_hash = pairs.pop("hash", None)
     if not received_hash:
@@ -50,11 +47,14 @@ def parse_and_validate_init_data(init_data: str) -> dict:
         secret_key, data_check_string.encode(), hashlib.sha256
     ).hexdigest()
 
-    # Doimiy vaqtli solishtirish — timing-attack oldini olish uchun ==, != o'rniga
     if not hmac.compare_digest(computed_hash, received_hash):
         raise InvalidInitData("hash mos kelmadi — soxta yoki o'zgartirilgan initData")
 
-    auth_date = int(pairs.get("auth_date", 0))
+    try:
+        auth_date = int(pairs.get("auth_date", 0))
+    except ValueError as exc:
+        raise InvalidInitData("auth_date formati noto'g'ri") from exc
+
     if time.time() - auth_date > INIT_DATA_MAX_AGE_SECONDS:
         raise InvalidInitData("initData muddati o'tgan, ilovani qayta oching")
 
@@ -62,4 +62,7 @@ def parse_and_validate_init_data(init_data: str) -> dict:
     if not user_raw:
         raise InvalidInitData("user maydoni topilmadi")
 
-    return json.loads(user_raw)
+    try:
+        return json.loads(user_raw)
+    except json.JSONDecodeError as exc:
+        raise InvalidInitData("user maydoni JSON emas") from exc

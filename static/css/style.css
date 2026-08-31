@@ -19,18 +19,26 @@
 
   --radius: 14px;
   --shadow: 0 20px 40px -24px rgba(23,24,28,.25);
+  /* Telegram theme — JS orqali runtime'da to'ldiriladi,
+     fallback qiymatlar Telegram tashqarisida (oddiy brauzerda) ishlaydi */
+  --tg-bg: var(--paper);
+  --tg-text: var(--ink);
+  --tg-hint: var(--slate);
+  --tg-button: var(--ink);
+  --tg-button-text: #fff;
+  --tg-secondary-bg: #F1EFEA;
+}
+
+.subtitle, .result-label, .history-item-time{
+  color: var(--tg-hint);
 }
 
 *{ box-sizing: border-box; }
 html{ scroll-behavior: smooth; }
 
 body{
-  margin:0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  background: var(--tg-bg);
+  color: var(--tg-text);
 }
 
 .visually-hidden{

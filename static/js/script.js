@@ -15,6 +15,27 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
+
+  // Optional chaining — eski Telegram client'larda bu metodlar
+  // bo'lmasligi mumkin, xatolik chiqarmasin.
+  tg.disableVerticalSwipes?.();
+
+  applyTelegramTheme();
+  tg.onEvent("themeChanged", applyTelegramTheme);
+}
+
+// Telegram theme ranglarini CSS custom property'larga yozib qo'yamiz —
+// shunda dizayn dark/light mode bilan avtomatik moslashadi.
+function applyTelegramTheme() {
+  const p = tg.themeParams;
+  const root = document.documentElement.style;
+
+  if (p.bg_color) root.setProperty("--tg-bg", p.bg_color);
+  if (p.text_color) root.setProperty("--tg-text", p.text_color);
+  if (p.hint_color) root.setProperty("--tg-hint", p.hint_color);
+  if (p.button_color) root.setProperty("--tg-button", p.button_color);
+  if (p.button_text_color) root.setProperty("--tg-button-text", p.button_text_color);
+  if (p.secondary_bg_color) root.setProperty("--tg-secondary-bg", p.secondary_bg_color);
 }
 
 // DEMO_MODE = true bo'lsa, hech qanday backend kerak emas — pastdagi
@@ -127,6 +148,42 @@ document.getElementById("year").textContent = new Date().getFullYear();
 // ---------------------------------------------------------
 // LOCALSTORAGE — YUKLAR TARIXI (Telegram tashqarisidagi fallback)
 // ---------------------------------------------------------
+async function openHistoryDrawer() {
+  historyDrawer.classList.add("is-open");
+  historyOverlay.hidden = false;
+  requestAnimationFrame(() => historyOverlay.classList.add("is-open"));
+  historyDrawer.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+
+  // Native orqaga tugmasi drawer'ni yopsin
+  if (tg?.BackButton) {
+    tg.BackButton.show();
+    tg.BackButton.onClick(closeHistoryDrawer);
+  }
+
+  if (isTelegramMode()) {
+    await loadHistoryFirstPage();
+  } else {
+    renderHistoryList(getHistory());
+  }
+}
+
+function closeHistoryDrawer() {
+  historyDrawer.classList.remove("is-open");
+  historyOverlay.classList.remove("is-open");
+  historyDrawer.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  setTimeout(() => {
+    historyOverlay.hidden = true;
+  }, 200);
+
+  if (tg?.BackButton) {
+    tg.BackButton.hide();
+    tg.BackButton.offClick(closeHistoryDrawer);
+  }
+}
+
+
 const HISTORY_KEY = "atl_tracking_history";
 const HISTORY_LIMIT = 15;
 
@@ -288,16 +345,19 @@ async function performSearch(trackingNumber) {
   hideAllResultBlocks();
 
   try {
-    const cargo = await fetchCargo(trackingNumber);
-    renderResult(cargo);
-    saveToHistory(cargo);
-  } catch (err) {
-    if (err.status === 404) {
-      emptyState.hidden = false;
-    } else {
-      showError("Server bilan bog'lanishda xatolik. Birozdan so'ng qayta urinib ko'ring.");
-    }
-  } finally {
+      const cargo = await fetchCargo(trackingNumber);
+      renderResult(cargo);
+      saveToHistory(cargo);
+      tg?.HapticFeedback?.notificationOccurred("success");
+    } catch (err) {
+      if (err.status === 404) {
+        emptyState.hidden = false;
+        tg?.HapticFeedback?.notificationOccurred("warning");
+      } else {
+        showError("Server bilan bog'lanishda xatolik. Birozdan so'ng qayta urinib ko'ring.");
+        tg?.HapticFeedback?.notificationOccurred("error");
+      }
+    } finally {
     setLoading(false);
   }
 }
