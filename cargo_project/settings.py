@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "corsheaders",
 
     "tracking",
+    "shipments",
 ]
 
 MIDDLEWARE = [
@@ -136,6 +137,7 @@ REST_FRAMEWORK = {
 # https://django-jazzmin.readthedocs.io/
 # ---------------------------------------------------------------------------
 JAZZMIN_SETTINGS = {
+    # "hide_apps": ["auth"],
     "site_title": "A&T Logistics",
     "site_header": "A&T Logistics",
     "site_brand": "A&T Logistics",
@@ -158,15 +160,24 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fas fa-users",
     },
 
-    "custom_css": "css/admin-custom.css",
+    "custom_css": "admin/css/admin-custom.css",
     "custom_js": "js/admin-custom.js",
 
     "site_logo": "img/logo.png",
     "site_icon": "img/logo.png",
+
+    "custom_links": {
+        "shipments": [{
+            "name": "Statistika",
+            "url": "admin:shipments_dashboard",
+            "icon": "fas fa-chart-line",
+            "permissions": ["shipments.view_shipment"],
+        }],
+    },
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "materia",
+    "theme": "spacelab",
     "default_theme_mode": "light",
 
     "navbar_small_text": False,

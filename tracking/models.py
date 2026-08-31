@@ -26,7 +26,7 @@ tracking_number_validator = RegexValidator(
 class Client(models.Model):
     name = models.CharField(
         max_length=120,
-        verbose_name="Ism va familiya",
+        verbose_name="Mijoz",
     )
 
     telegram_id = models.BigIntegerField(
@@ -54,7 +54,7 @@ class Client(models.Model):
     )
 
     class Meta:
-        ordering = ["name"]
+        # ordering = ["name"]
         verbose_name = "Mijoz"
         verbose_name_plural = "Mijozlar"
 
