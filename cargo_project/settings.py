@@ -177,8 +177,9 @@ JAZZMIN_SETTINGS = {
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "spacelab",
-    "default_theme_mode": "light",
+    "theme": "slate",
+    "dark_mode_theme": "slate",  # dark rejimda ham qaysi tema ishlatilishini aniq ko'rsatamiz
+    "default_theme_mode": "dark",
 
     "navbar_small_text": False,
     "sidebar_small_text": False,

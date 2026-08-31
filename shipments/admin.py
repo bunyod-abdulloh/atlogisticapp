@@ -132,8 +132,8 @@ class ShipmentAdmin(admin.ModelAdmin):
             return "—"
         deviation = (obj.actual_shipping_date - obj.planned_shipping_date).days
         if deviation <= 0:
-            return "—"  # kechikmagan yoki muddatidan oldin — ko'rsatishga hojat yo'q
-        color = "#dc3545" if deviation > 3 else "#fd7e14"  # xohlasangiz darajaga qarab rang
+            return "—"
+        color = "var(--bs-danger-text-emphasis)" if deviation > 3 else "var(--bs-warning-text-emphasis)"
         return format_html('<b style="color:{}">+{} kun</b>', color, deviation)
 
     # --- Dashboard ---
@@ -182,19 +182,3 @@ class ShipmentAdmin(admin.ModelAdmin):
             "overdue_total": overdue_total,
             "overdue_total_url": f"{shipment_list_url}?overdue=yes",
         }
-
-
-# @admin.register(Stage)
-# class StageAdmin(admin.ModelAdmin):
-#     """Faqat ko'rish/qidirish uchun — yozuvlar signal orqali avtomatik yaratiladi."""
-#
-#     list_display = ("shipment", "stage_status", "created_at")
-#     list_filter = ("stage_status",)
-#     search_fields = ("shipment__shipment_code",)
-#     autocomplete_fields = ("shipment",)
-#
-#     def has_add_permission(self, request):
-#         return False
-#
-#     def has_change_permission(self, request, obj=None):
-#         return False

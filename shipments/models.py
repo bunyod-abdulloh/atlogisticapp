@@ -92,7 +92,7 @@ class Shipment(models.Model):
         editable=False, blank=True,
         help_text="Avtomatik generatsiya qilinadi (masalan: ATLG-0001)",
     )
-    client = models.ForeignKey(Client, on_delete=models.PROTECT, verbose_name="Mijoz")
+    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="shipments", verbose_name="Mijoz")
     sender = models.ForeignKey(Sender, on_delete=models.PROTECT, related_name="shipments", verbose_name="Jo'natuvchi")
     recipient = models.CharField("Qabul qiluvchi", max_length=255)
     product = models.CharField("Tovar", max_length=255)
