@@ -1,6 +1,8 @@
 /* =========================================================
    DESIGN TOKENS
    ========================================================= */
+history
+
 :root{
   --ink:        #17181C;
   --paper:      #FDFCFB;
@@ -116,8 +118,9 @@ body{
   top:0; right:0;
   height:100%;
   width: min(380px, 100%);
-  background:#fff;
-  border-left:1px solid var(--line);
+  background: var(--tg-bg);              /* edi: #fff */
+  color: var(--tg-text);
+  border-left: 1px solid rgba(127,127,127,.25);   /* edi: var(--line) */
   box-shadow: -20px 0 40px -24px rgba(23,24,28,.35);
   z-index: 41;
   padding: 22px 22px 24px;
@@ -144,15 +147,16 @@ body{
   width:32px; height:32px;
   display:flex; align-items:center; justify-content:center;
   background:none; border:none; cursor:pointer;
-  color: var(--slate);
+  color: var(--tg-hint);                 /* edi: var(--slate) */
   border-radius:8px;
 }
+.drawer-close:hover{ background: var(--tg-secondary-bg); color: var(--tg-text); }
 .drawer-close svg{ width:18px; height:18px; }
-.drawer-close:hover{ background:#F1EFEA; color: var(--ink); }
+
 
 .drawer-hint{
   font-size:.83rem;
-  color: var(--slate);
+  color: var(--tg-hint);                 /* edi: var(--slate) */
   margin: 0 0 18px;
   line-height:1.45;
 }
@@ -171,13 +175,14 @@ body{
   width:100%;
   text-align:left;
   padding: 12px 14px;
-  background: #FAF9F6;
-  border:1px solid var(--line);
+  background: var(--tg-secondary-bg);    /* edi: #FAF9F6 */
+  color: var(--tg-text);
+  border: 1px solid rgba(127,127,127,.18);  /* edi: var(--line) */
   border-radius:10px;
   cursor:pointer;
   transition: border-color .15s ease, background .15s ease;
 }
-.history-item:hover{ border-color: var(--orange); background:#fff; }
+.history-item:hover{ border-color: var(--orange); background: var(--tg-bg); }
 .history-item:focus-visible{ outline: 3px solid var(--orange); outline-offset:1px; }
 
 .history-item-top{
@@ -211,7 +216,7 @@ body{
 
 .history-empty{
   font-size:.9rem;
-  color: var(--slate);
+  color: var(--tg-hint);                 /* edi: var(--slate) */
   text-align:center;
   margin-top:30px;
 }
@@ -240,22 +245,23 @@ body{
   font-family: var(--font-body);
   font-size:.87rem;
   font-weight:600;
-  color: var(--ink);
-  background:#F1EFEA;
-  border:1.5px solid var(--line);
+  color: var(--tg-text);                 /* edi: var(--ink) */
+  background: var(--tg-secondary-bg);    /* edi: #F1EFEA */
+  border: 1.5px solid rgba(127,127,127,.18); /* edi: var(--line) */
   border-radius:10px;
   cursor:pointer;
   transition: background .15s ease, border-color .15s ease;
 }
-.history-load-more:hover{ background:#E7E5E0; }
+.history-load-more:hover{ border-color: var(--orange); }
+
 .history-load-more:focus-visible{ outline: 3px solid var(--orange); outline-offset:2px; }
 .history-load-more:disabled{ cursor:default; opacity:.75; }
 
 .history-load-more .btn-spinner{
   display:none;
   width:14px; height:14px;
-  border:2px solid rgba(23,24,28,.25);
-  border-top-color: var(--ink);
+  border: 2px solid rgba(127,127,127,.3);
+  border-top-color: var(--tg-text);      /* edi: var(--ink) */
   border-radius:50%;
 }
 .history-load-more.is-loading .btn-text{ display:none; }
@@ -407,17 +413,21 @@ body{
 .result-top {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     min-width: 0;
 }
 
+/* Endi alohida, to'liq kenglikdagi qator */
 .result-image {
-    width: clamp(76px, 24vw, 110px);
-    height: clamp(76px, 24vw, 110px);
-    border-radius: 14px;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;      /* barqaror nisbat, layout "sakramaydi" */
+    max-height: 260px;
     object-fit: cover;
-    flex-shrink: 0;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    margin-bottom: 20px;
 }
 
 .result-top > div {
@@ -578,28 +588,13 @@ body{
 @media (max-width: 480px){
   #track-form{ flex-direction:column; }
   .hero-route{ display:none; }
-  .result-top{ flex-direction:column; }
 
-  /* Yuklar tarixi tugmasi: to'liq matn yashiriladi, qisqasi chiqadi */
   .header-btn-text-full{ display:none; }
   .header-btn-text-short{ display:inline; }
-
   .header-actions{ gap:8px; }
 
-  .header-btn{
-    padding: 8px 13px 8px 10px;
-    gap: 6px;
-    font-size: .84rem;
-    border: 1.5px solid var(--line);
-  }
+  .header-btn{ padding: 8px 13px 8px 10px; gap: 6px; font-size: .84rem; border: 1.5px solid var(--line); }
+  .header-link{ padding: 8px 15px; font-size: .84rem; }
 
-  .header-link{
-    padding: 8px 15px;
-    font-size: .84rem;
-  }
-
-  .result-top {
-    flex-direction: row;
-    align-items: center;
-  }
+  .result-image{ max-height: 200px; }   /* mobilda biroz pastroq */
 }
