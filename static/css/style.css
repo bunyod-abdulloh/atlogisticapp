@@ -1,8 +1,6 @@
 /* =========================================================
    DESIGN TOKENS
    ========================================================= */
-history
-
 :root{
   --ink:        #17181C;
   --paper:      #FDFCFB;
@@ -342,14 +340,17 @@ body{
   font-family: var(--font-mono);
   font-size: 1rem;
   letter-spacing:.02em;
-  color: var(--ink);
-  background:#fff;
-  border: 1.5px solid var(--line);
+  color: var(--tg-text);                       /* edi: var(--ink) */
+  background: var(--tg-secondary-bg);          /* edi: #fff */
+  border: 1.5px solid rgba(127,127,127,.25);   /* edi: var(--line) */
   border-radius: 10px;
   outline:none;
   transition: border-color .15s ease, box-shadow .15s ease;
 }
-#tracking-input::placeholder{ color:#B3B0A9; font-family: var(--font-body); }
+#tracking-input::placeholder{
+  color: var(--tg-hint);                        /* edi: #B3B0A9 */
+  font-family: var(--font-body);
+}
 #tracking-input:focus{
   border-color: var(--orange);
   box-shadow: 0 0 0 4px rgba(242,145,0,.15);
@@ -402,8 +403,8 @@ body{
 }
 
 .result-card{
-  background:#fff;
-  border:1px solid var(--line);
+  background: var(--tg-secondary-bg);
+  border: 1px solid rgba(127,127,127,.2);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 26px 28px;
@@ -471,11 +472,12 @@ body{
   gap:10px;
   margin-top:18px;
   padding-top:18px;
-  border-top:1px dashed var(--line);
+  border-top: 1px dashed rgba(127,127,127,.25);
   font-size:.95rem;
-  color: var(--ink);
+  color: var(--tg-text);
   flex-wrap:wrap;
 }
+
 .route-arrow{ width:16px; height:16px; color: var(--orange); flex-shrink:0; }
 
 /* =========================================================
@@ -498,7 +500,23 @@ body{
   position:absolute;
   left:13px; top:6px; bottom:6px;
   width:1.5px;
-  background: var(--line);
+  background: rgba(127,127,127,.3);
+}
+
+.timeline-mark{
+  position:relative; z-index:1;
+  flex-shrink:0;
+  width:27px; height:27px;
+  color: rgba(127,127,127,.5);
+}
+
+.timeline-comment{
+  margin:6px 0 0;
+  font-size:.9rem;
+  color: var(--tg-text);
+  background: rgba(127,127,127,.12);
+  border-radius:8px;
+  padding:8px 12px;
 }
 
 .timeline-item{
@@ -508,13 +526,6 @@ body{
   padding-bottom: 26px;
 }
 .timeline-item:last-child{ padding-bottom:0; }
-
-.timeline-mark{
-  position:relative; z-index:1;
-  flex-shrink:0;
-  width:27px; height:27px;
-  color: var(--line);
-}
 .timeline-item.is-current .timeline-mark{ color: var(--orange); }
 
 .timeline-body{ padding-top:1px; }
@@ -529,14 +540,6 @@ body{
   color: var(--slate);
   font-family: var(--font-mono);
 }
-.timeline-comment{
-  margin:6px 0 0;
-  font-size:.9rem;
-  color: var(--ink);
-  background: #F6F5F2;
-  border-radius:8px;
-  padding:8px 12px;
-}
 
 /* =========================================================
    TOPILMADI HOLATI
@@ -549,7 +552,7 @@ body{
 }
 .empty-mark{
   width:44px; height:44px;
-  color: var(--line);
+  color: rgba(127,127,127,.5);
   margin: 0 auto 18px;
 }
 .empty-state h2{
