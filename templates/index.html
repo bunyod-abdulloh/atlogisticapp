@@ -25,65 +25,34 @@
         </svg>
         <span class="brand-name">A&amp;T <em>Logistics</em></span>
     </div>
-    <div class="header-actions">
-        <button type="button" class="header-btn" id="history-open-btn">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 12a9 9 0 1 0 3-6.7M3 12V6m0 6h6" stroke="currentColor" stroke-width="1.8" fill="none"
-                      stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"
-                      stroke-linejoin="round"/>
-            </svg>
-            <span class="header-btn-text-full">Yuklar tarixi</span>
-            <span class="header-btn-text-short">Tarix</span>
-        </button>
-    </div>
 </header>
 
 <main>
 
-    <!-- ===== HERO / QIDIRUV ===== -->
-    <section class="hero">
-        <div class="hero-route" aria-hidden="true">
-            <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
-                <path id="route-path" d="M -50 150 C 150 20, 350 180, 500 90 S 800 10, 1050 60"/>
-            </svg>
-            <svg class="hero-pin hero-pin--start" viewBox="0 0 100 100">
-                <rect x="8" y="8" width="84" height="24"/>
-                <polygon points="50,38 92,92 8,92"/>
-            </svg>
-            <svg class="hero-pin hero-pin--end" viewBox="0 0 100 100">
-                <rect x="8" y="8" width="84" height="24"/>
-                <polygon points="50,38 92,92 8,92"/>
-            </svg>
-        </div>
+    <!-- ===== YUKLAR RO'YXATI ===== -->
+    <section class="cargo-list-section">
+        <h1>Yuklaringiz ro'yxati</h1>
+        <p class="subtitle">Kerakli yukni tanlang — joriy status va butun yo'l tarixini ko'rasiz.</p>
 
-        <p class="eyebrow">Yuk kuzatuvi</p>
-        <h1>Yukingiz hozir<br>qayerda ekanini bilib oling</h1>
-        <p class="subtitle">Track-nomeringizni kiriting — joriy status va butun yo'l tarixini ko'rasiz.</p>
+        <ul class="history-list" id="history-list"></ul>
 
-        <form id="track-form" novalidate>
-            <label class="visually-hidden" for="tracking-input">Track-nomer</label>
-            <input
-                    type="text"
-                    id="tracking-input"
-                    name="tracking_number"
-                    placeholder="Masalan: ATL-24081"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-            >
-            <button type="submit" id="track-submit">
-                <span class="btn-text">Tekshirish</span>
-                <span class="btn-spinner" aria-hidden="true"></span>
-            </button>
-        </form>
-        <p id="form-error" class="form-error" role="alert" hidden></p>
+        <p class="history-empty" id="history-empty" hidden>Siz hali birorta yukni tekshirmagansiz.</p>
+        <button type="button" class="history-load-more" id="history-load-more" hidden>
+            <span class="btn-text">Yana yuklash</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
     </section>
 
     <!-- ===== NATIJA ===== -->
     <section id="result" class="result" hidden aria-live="polite">
-
         <div class="result-card">
+            <button type="button" class="result-back-btn" id="result-back-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Ro'yxatga qaytish
+            </button>
             <img id="res-cargo-image" class="result-image" src="" alt="" hidden>
 
             <div class="result-top">
@@ -127,28 +96,6 @@
     <span>© <span id="year"></span> A&amp;T Logistics</span>
 </footer>
 
-<!-- ===== YUKLAR TARIXI PANELI ===== -->
-<div class="drawer-overlay" id="history-overlay" hidden></div>
-<aside class="history-drawer" id="history-drawer" aria-hidden="true" aria-label="Yuklar tarixi">
-    <div class="drawer-header">
-        <h2>Yuklar tarixi</h2>
-        <button type="button" class="drawer-close" id="history-close-btn" aria-label="Yopish">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" fill="none"
-                      stroke-linecap="round"/>
-            </svg>
-        </button>
-    </div>
-
-    <ul class="history-list" id="history-list"></ul>
-
-    <p class="history-empty" id="history-empty" hidden>Siz hali birorta yukni tekshirmagansiz.</p>
-    <button type="button" class="history-load-more" id="history-load-more" hidden>
-        <span class="btn-text">Yana yuklash</span>
-        <span class="btn-spinner" aria-hidden="true"></span>
-    </button>
-
-</aside>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="{% static 'js/script.js' %}"></script>
 </body>

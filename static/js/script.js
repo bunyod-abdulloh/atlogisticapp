@@ -1,13 +1,7 @@
 // ---------------------------------------------------------
 // SOZLAMALAR
 // ---------------------------------------------------------
-// Django backend shu domenda ishlaydigan bo'lsa nisbiy yo'l yetarli.
-// Agar frontend alohida domenda joylashsa, to'liq manzil yozing:
-// masalan "https://api.atlogisticgroup.com/api"
 const API_BASE = "/user/api";
-
-// Bu yerda "delivered" statusini backend qanday kod bilan qaytarishini
-// belgilaymiz — DRF serializer shu qiymatni yuborishi kerak.
 const DELIVERED_CODE = "delivered";
 
 const tg = window.Telegram?.WebApp;
@@ -15,17 +9,11 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-
-  // Optional chaining — eski Telegram client'larda bu metodlar
-  // bo'lmasligi mumkin, xatolik chiqarmasin.
   tg.disableVerticalSwipes?.();
-
   applyTelegramTheme();
   tg.onEvent("themeChanged", applyTelegramTheme);
 }
 
-// Telegram theme ranglarini CSS custom property'larga yozib qo'yamiz —
-// shunda dizayn dark/light mode bilan avtomatik moslashadi.
 function applyTelegramTheme() {
   const p = tg.themeParams;
   const root = document.documentElement.style;
@@ -38,9 +26,6 @@ function applyTelegramTheme() {
   if (p.secondary_bg_color) root.setProperty("--tg-secondary-bg", p.secondary_bg_color);
 }
 
-// DEMO_MODE = true bo'lsa, hech qanday backend kerak emas — pastdagi
-// DEMO_DATA'dan javob qaytadi. Django API tayyor bo'lgach shu yerni
-// false qiling, boshqa hech narsani o'zgartirish shart emas.
 const DEMO_MODE = false;
 const DEMO_NETWORK_DELAY_MS = 600;
 
@@ -52,24 +37,9 @@ const DEMO_DATA = {
     origin: "Guangzhou, Xitoy",
     destination: "Toshkent, O'zbekiston",
     history: [
-      {
-        status_display: "Qabul qilindi (Xitoy sklad)",
-        location: "Guangzhou",
-        timestamp: "2026-08-05T09:15:00",
-        comment: "",
-      },
-      {
-        status_display: "Chegaradan o'tdi",
-        location: "Xorgos",
-        timestamp: "2026-08-08T14:30:00",
-        comment: "",
-      },
-      {
-        status_display: "Yo'lda (Qozog'iston)",
-        location: "Shymkent",
-        timestamp: "2026-08-11T18:00:00",
-        comment: "Ob-havo sababli ~1 kunlik kechikish bo'lishi mumkin.",
-      },
+      { status_display: "Qabul qilindi (Xitoy sklad)", location: "Guangzhou", timestamp: "2026-08-05T09:15:00", comment: "" },
+      { status_display: "Chegaradan o'tdi", location: "Xorgos", timestamp: "2026-08-08T14:30:00", comment: "" },
+      { status_display: "Yo'lda (Qozog'iston)", location: "Shymkent", timestamp: "2026-08-11T18:00:00", comment: "Ob-havo sababli ~1 kunlik kechikish bo'lishi mumkin." },
     ],
   },
   "ATL-24002": {
@@ -79,30 +49,10 @@ const DEMO_DATA = {
     origin: "Guangzhou, Xitoy",
     destination: "Samarqand, O'zbekiston",
     history: [
-      {
-        status_display: "Qabul qilindi (Xitoy sklad)",
-        location: "Guangzhou",
-        timestamp: "2026-07-20T10:00:00",
-        comment: "",
-      },
-      {
-        status_display: "Chegaradan o'tdi",
-        location: "Xorgos",
-        timestamp: "2026-07-23T11:20:00",
-        comment: "",
-      },
-      {
-        status_display: "Toshkent skladiga yetib keldi",
-        location: "Toshkent",
-        timestamp: "2026-07-27T08:45:00",
-        comment: "",
-      },
-      {
-        status_display: "Yetkazib berildi",
-        location: "Samarqand",
-        timestamp: "2026-07-29T16:10:00",
-        comment: "Mijoz tomonidan qabul qilingan.",
-      },
+      { status_display: "Qabul qilindi (Xitoy sklad)", location: "Guangzhou", timestamp: "2026-07-20T10:00:00", comment: "" },
+      { status_display: "Chegaradan o'tdi", location: "Xorgos", timestamp: "2026-07-23T11:20:00", comment: "" },
+      { status_display: "Toshkent skladiga yetib keldi", location: "Toshkent", timestamp: "2026-07-27T08:45:00", comment: "" },
+      { status_display: "Yetkazib berildi", location: "Samarqand", timestamp: "2026-07-29T16:10:00", comment: "Mijoz tomonidan qabul qilingan." },
     ],
   },
   "ATL-24150": {
@@ -112,88 +62,50 @@ const DEMO_DATA = {
     origin: "Guangzhou, Xitoy",
     destination: "Farg'ona, O'zbekiston",
     history: [
-      {
-        status_display: "Qabul qilindi (Xitoy sklad)",
-        location: "Guangzhou",
-        timestamp: "2026-08-13T12:00:00",
-        comment: "",
-      },
+      { status_display: "Qabul qilindi (Xitoy sklad)", location: "Guangzhou", timestamp: "2026-08-13T12:00:00", comment: "" },
     ],
   },
 };
-// Demo rejimda shu nomerlardan birini kiriting: ATL-24081, ATL-24002, ATL-24150
-// Boshqa har qanday nomer "topilmadi" holatini ko'rsatadi.
 
 // ---------------------------------------------------------
-// DOM elementlar (barchasi bitta joyda)
+// DOM elementlar
 // ---------------------------------------------------------
-const form = document.getElementById("track-form");
-const input = document.getElementById("tracking-input");
-const submitBtn = document.getElementById("track-submit");
-const formError = document.getElementById("form-error");
-
 const resultSection = document.getElementById("result");
 const emptyState = document.getElementById("empty-state");
 
-const historyOpenBtn = document.getElementById("history-open-btn");
-const historyCloseBtn = document.getElementById("history-close-btn");
-const historyDrawer = document.getElementById("history-drawer");
-const historyOverlay = document.getElementById("history-overlay");
 const historyList = document.getElementById("history-list");
 const historyEmpty = document.getElementById("history-empty");
 const historyLoadMoreBtn = document.getElementById("history-load-more");
+const listError = document.getElementById("list-error"); // yangi element, HTML'ga qo'shildi
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
 // ---------------------------------------------------------
 // LOCALSTORAGE — YUKLAR TARIXI (Telegram tashqarisidagi fallback)
 // ---------------------------------------------------------
-async function openHistoryDrawer() {
-  historyDrawer.classList.add("is-open");
-  historyOverlay.hidden = false;
-  requestAnimationFrame(() => historyOverlay.classList.add("is-open"));
-  historyDrawer.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
+const HISTORY_KEY = "atl_tracking_history";
+const HISTORY_LIMIT = 15;
 
-  // Native orqaga tugmasi drawer'ni yopsin
-  if (tg?.BackButton) {
-    tg.BackButton.show();
-    tg.BackButton.onClick(closeHistoryDrawer);
-  }
+const resultBackBtn = document.getElementById("result-back-btn");
+const cargoListSection = document.querySelector(".cargo-list-section");
 
-  if (isTelegramMode()) {
-    await loadHistoryFirstPage();
-  } else {
-    renderHistoryList(getHistory());
-  }
-}
+resultBackBtn.addEventListener("click", goBackToList);
 
-function closeHistoryDrawer() {
-  historyDrawer.classList.remove("is-open");
-  historyOverlay.classList.remove("is-open");
-  historyDrawer.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  setTimeout(() => {
-    historyOverlay.hidden = true;
-  }, 200);
+function goBackToList() {
+  hideAllResultBlocks();
+  cargoListSection.scrollIntoView({ behavior: "smooth" });
 
   if (tg?.BackButton) {
     tg.BackButton.hide();
-    tg.BackButton.offClick(closeHistoryDrawer);
+    tg.BackButton.offClick(goBackToList);
   }
 }
-
-
-const HISTORY_KEY = "atl_tracking_history";
-const HISTORY_LIMIT = 15;
 
 function getHistory() {
   try {
     const raw = localStorage.getItem(HISTORY_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch {
-    // localStorage o'chirilgan yoki ma'lumot buzilgan bo'lishi mumkin —
-    // bunday holatda ilova qulab tushmasligi uchun bo'sh ro'yxat qaytaramiz.
     return [];
   }
 }
@@ -213,13 +125,15 @@ function saveToHistory(cargo) {
   const trimmed = existing.slice(0, HISTORY_LIMIT);
   localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
 
-  // Telegram ichida bu funksiya umuman chaqirilmaydi (tarix backend'dan olinadi),
-  // shuning uchun bu yerda har doim localStorage ro'yxatini chizamiz.
-  renderHistoryList(getHistory());
+  // Telegram rejimida bu chaqirilmaydi (tarix backend'dan), shu sabab
+  // faqat localStorage rejimida ro'yxatni qayta chizamiz.
+  if (!isTelegramMode()) {
+    renderHistoryList(getHistory());
+  }
 }
 
 // ---------------------------------------------------------
-// YUKLAR TARIXI — PAGINATION HOLATI (faqat Telegram rejimi uchun)
+// YUKLAR RO'YXATI — PAGINATION HOLATI (faqat Telegram rejimi uchun)
 // ---------------------------------------------------------
 const HISTORY_PAGE_LIMIT = 15;
 
@@ -263,7 +177,7 @@ async function fetchCargoHistoryPage(offset) {
   return response.json(); // { count, next, previous, results }
 }
 
-// Drawer har ochilganda birinchi sahifadan boshlanadi
+// Sahifa birinchi ochilganda ishga tushadi (avvalgi versiyada drawer ochilganda edi)
 async function loadHistoryFirstPage() {
   historyState = { items: [], offset: 0, hasMore: true, isLoading: false };
 
@@ -275,7 +189,6 @@ async function loadHistoryFirstPage() {
     historyState.hasMore = Boolean(page.next);
     renderHistoryList(historyState.items);
   } catch {
-    // Backend javob bermasa — qurilmadagi tarixga qaytamiz (fallback)
     historyState.hasMore = false;
     renderHistoryList(getHistory());
   } finally {
@@ -283,7 +196,6 @@ async function loadHistoryFirstPage() {
   }
 }
 
-// "Yana yuklash" bosilganda keyingi sahifani so'raymiz va ro'yxatga qo'shamiz
 async function loadHistoryNextPage() {
   if (!historyState.hasMore || historyState.isLoading) return;
 
@@ -298,7 +210,7 @@ async function loadHistoryNextPage() {
 
     renderHistoryList(historyState.items);
   } catch {
-    showHistoryLoadError();
+    showListLoadError();
   } finally {
     setHistoryLoading(false);
   }
@@ -308,12 +220,10 @@ function setHistoryLoading(isLoading) {
   historyState.isLoading = isLoading;
   historyLoadMoreBtn.classList.toggle("is-loading", isLoading);
   historyLoadMoreBtn.disabled = isLoading;
-  // Telegram rejimida emasmiz — tugma umuman ko'rinmasin
   historyLoadMoreBtn.hidden = !isTelegramMode() || !historyState.hasMore;
 }
 
-function showHistoryLoadError() {
-  // Oddiy holatda tugma matnini vaqtincha o'zgartiramiz — alohida error blok shart emas
+function showListLoadError() {
   const text = historyLoadMoreBtn.querySelector(".btn-text");
   const original = text.textContent;
   text.textContent = "Xatolik, qayta urinish";
@@ -323,42 +233,51 @@ function showHistoryLoadError() {
 }
 
 // ---------------------------------------------------------
-// Forma yuborilishi
+// Sahifa yuklanganda ro'yxatni chizish
 // ---------------------------------------------------------
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  performSearch(input.value.trim());
-});
-
-// Qidiruvni bitta joyda jamlaganmiz — forma orqali ham,
-// tarix ro'yxatidan bosilganda ham shu funksiya ishlaydi.
-async function performSearch(trackingNumber) {
-  hideError();
-
-  if (!trackingNumber) {
-    showError("Track-nomerni kiriting.");
-    return;
+async function initCargoList() {
+  if (isTelegramMode()) {
+    await loadHistoryFirstPage();
+  } else {
+    renderHistoryList(getHistory());
   }
+}
 
-  input.value = trackingNumber;
-  setLoading(true);
+initCargoList();
+
+// ---------------------------------------------------------
+// Qidiruv — endi ro'yxatdagi elementga bosilganda chaqiriladi
+// ---------------------------------------------------------
+async function performSearch(trackingNumber) {
+  hideListError();
+  if (!trackingNumber) return;
+
   hideAllResultBlocks();
 
   try {
-      const cargo = await fetchCargo(trackingNumber);
-      renderResult(cargo);
-      saveToHistory(cargo);
-      tg?.HapticFeedback?.notificationOccurred("success");
-    } catch (err) {
-      if (err.status === 404) {
-        emptyState.hidden = false;
-        tg?.HapticFeedback?.notificationOccurred("warning");
-      } else {
-        showError("Server bilan bog'lanishda xatolik. Birozdan so'ng qayta urinib ko'ring.");
-        tg?.HapticFeedback?.notificationOccurred("error");
+    const cargo = await fetchCargo(trackingNumber);
+    renderResult(cargo);
+    saveToHistory(cargo);
+    tg?.HapticFeedback?.notificationOccurred("success");
+    resultSection.scrollIntoView({ behavior: "smooth" });
+
+    // Telegram ichida bo'lsa — native orqaga tugmasi ro'yxatga qaytaradi
+    if (tg?.BackButton) {
+      tg.BackButton.show();
+      tg.BackButton.onClick(goBackToList);
+    }
+  } catch (err) {
+    if (err.status === 404) {
+      emptyState.hidden = false;
+      tg?.HapticFeedback?.notificationOccurred("warning");
+      if (tg?.BackButton) {
+        tg.BackButton.show();
+        tg.BackButton.onClick(goBackToList);
       }
-    } finally {
-    setLoading(false);
+    } else {
+      showListError("Server bilan bog'lanishda xatolik. Birozdan so'ng qayta urinib ko'ring.");
+      tg?.HapticFeedback?.notificationOccurred("error");
+    }
   }
 }
 
@@ -370,8 +289,6 @@ async function fetchCargo(trackingNumber) {
     return fetchCargoDemo(trackingNumber);
   }
 
-  // encodeURIComponent — track-nomer ichida "/" yoki bo'shliq bo'lsa ham
-  // URL buzilib ketmasligi uchun.
   const url = `${API_BASE}/track/${encodeURIComponent(trackingNumber)}/`;
 
   const response = await fetch(url, {
@@ -407,23 +324,6 @@ function fetchCargoDemo(trackingNumber) {
 // ---------------------------------------------------------
 // Natijani chizish
 // ---------------------------------------------------------
-// Kutilayotgan JSON shakli (Django/DRF tomonidan):
-// {
-//   "tracking_number": "ATL-24081",
-//   "status": "in_transit",
-//   "status_display": "Yo'lda (Qozog'iston)",
-//   "origin": "Guangzhou, Xitoy",
-//   "destination": "Toshkent, O'zbekiston",
-//   "history": [
-//     {
-//       "status_display": "Qabul qilindi (Xitoy)",
-//       "location": "Guangzhou",
-//       "timestamp": "2026-08-01T10:00:00Z",
-//       "comment": ""
-//     },
-//     ...
-//   ]
-// }
 function renderResult(cargo) {
   resultSection.hidden = false;
 
@@ -437,7 +337,6 @@ function renderResult(cargo) {
     image.alt = `Yuk rasmi — ${cargo.tracking_number}`;
     image.hidden = false;
   } else {
-    // Rasm bo'lmasa elementni butunlay yashiramiz — bo'sh "broken image" ikonkasi ko'rinmasin
     image.hidden = true;
     image.src = "";
   }
@@ -451,7 +350,7 @@ function renderResult(cargo) {
 
 function renderTimeline(history) {
   const list = document.getElementById("timeline");
-  list.textContent = ""; // avvalgi natijani tozalash
+  list.textContent = "";
 
   if (history.length === 0) {
     const li = document.createElement("li");
@@ -461,8 +360,6 @@ function renderTimeline(history) {
     return;
   }
 
-  // Backend odatda eskidan yangiga qarab yuboradi — ekranda
-  // eng yangi voqea tepada chiqishi uchun teskari aylantiramiz.
   const events = [...history].reverse();
 
   events.forEach((event, index) => {
@@ -496,8 +393,6 @@ function renderTimeline(history) {
   });
 }
 
-// Logotipdagi belgini (panel + uchburchak) timeline nuqtasi sifatida
-// qayta yasaydi — sahifaning "imzo" elementi shu yerda takrorlanadi.
 function buildMarkIcon() {
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
@@ -534,15 +429,13 @@ function formatMeta(location, timestamp) {
 }
 
 // ---------------------------------------------------------
-// YUKLAR TARIXI PANELI — ochish/yopish va chizish
+// Ro'yxatni chizish (endi sahifada doim ko'rinib turadi)
 // ---------------------------------------------------------
 function renderHistoryList(items) {
   historyList.textContent = "";
 
   const hasItems = items.length > 0;
   historyEmpty.hidden = hasItems;
-
-  // "Yana yuklash" faqat Telegram + hasMore bo'lganda ko'rinadi
   historyLoadMoreBtn.hidden = !isTelegramMode() || !historyState.hasMore;
 
   items.forEach((item) => {
@@ -574,10 +467,9 @@ function renderHistoryList(items) {
     button.appendChild(top);
     button.appendChild(time);
 
+    // Endi drawer yopish shart emas — shunchaki tanlangan yukni ko'rsatamiz
     button.addEventListener("click", () => {
-      closeHistoryDrawer();
       performSearch(item.tracking_number);
-      document.getElementById("track-form").scrollIntoView({ behavior: "smooth" });
     });
 
     li.appendChild(button);
@@ -585,60 +477,21 @@ function renderHistoryList(items) {
   });
 }
 
-async function openHistoryDrawer() {
-  historyDrawer.classList.add("is-open");
-  historyOverlay.hidden = false;
-  requestAnimationFrame(() => historyOverlay.classList.add("is-open"));
-  historyDrawer.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-
-  if (isTelegramMode()) {
-    await loadHistoryFirstPage();
-  } else {
-    // Telegram tashqarisida pagination shart emas — localStorage HISTORY_LIMIT'dan oshmaydi
-    renderHistoryList(getHistory());
-  }
-}
-
-function closeHistoryDrawer() {
-  historyDrawer.classList.remove("is-open");
-  historyOverlay.classList.remove("is-open");
-  historyDrawer.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  setTimeout(() => {
-    historyOverlay.hidden = true;
-  }, 200);
-}
-
-historyOpenBtn.addEventListener("click", openHistoryDrawer);
-historyCloseBtn.addEventListener("click", closeHistoryDrawer);
-historyOverlay.addEventListener("click", closeHistoryDrawer);
 historyLoadMoreBtn.addEventListener("click", loadHistoryNextPage);
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && historyDrawer.classList.contains("is-open")) {
-    closeHistoryDrawer();
-  }
-});
 
 // ---------------------------------------------------------
 // Yordamchi funksiyalar
 // ---------------------------------------------------------
-function setLoading(isLoading) {
-  submitBtn.classList.toggle("is-loading", isLoading);
-  submitBtn.disabled = isLoading;
-}
-
 function hideAllResultBlocks() {
   resultSection.hidden = true;
   emptyState.hidden = true;
 }
 
-function showError(message) {
-  formError.textContent = message;
-  formError.hidden = false;
+function showListError(message) {
+  listError.textContent = message;
+  listError.hidden = false;
 }
 
-function hideError() {
-  formError.hidden = true;
+function hideListError() {
+  listError.hidden = true;
 }
