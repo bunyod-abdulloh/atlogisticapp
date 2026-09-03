@@ -1,6 +1,7 @@
 // ---------------------------------------------------------
 // SOZLAMALAR
 // ---------------------------------------------------------
+
 const API_BASE = "/user/api";
 const DELIVERED_CODE = "delivered";
 
@@ -78,7 +79,7 @@ const historyEmpty = document.getElementById("history-empty");
 const historyLoadMoreBtn = document.getElementById("history-load-more");
 const listError = document.getElementById("list-error"); // yangi element, HTML'ga qo'shildi
 
-document.getElementById("year").textContent = new Date().getFullYear();
+//document.getElementById("year").textContent = new Date().getFullYear();
 
 // ---------------------------------------------------------
 // LOCALSTORAGE — YUKLAR TARIXI (Telegram tashqarisidagi fallback)
@@ -488,10 +489,15 @@ function hideAllResultBlocks() {
 }
 
 function showListError(message) {
+  if (!listError) {
+    console.warn("list-error elementi HTML'da topilmadi");
+    return;
+  }
   listError.textContent = message;
   listError.hidden = false;
 }
 
 function hideListError() {
+  if (!listError) return;
   listError.hidden = true;
 }
